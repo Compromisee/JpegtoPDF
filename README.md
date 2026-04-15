@@ -1,195 +1,143 @@
+## Batch Image To Pdf Converter
+
+
 # README.md
 
-# 📁 Batch Folder → PDF Converter
+# Batch Image Converter
 
-A simple Python desktop app that converts folders of JPEG/image files into
-PDF documents — one PDF per subfolder, named after the subfolder, saved to
-an output folder of your choosing.
+Convert image folders to PDF / EPUB / CBZ with automatic width normalization.
 
-
-## 📸 What It Does
-
-Given a source folder full of subfolders (each containing images), the app will:
-
-1. Detect all subfolders recursively
-2. Find all images inside each subfolder
-3. Sort them **alphanumerically** (so `page2` comes before `page10`)
-4. Convert each subfolder's images into a single PDF
-5. Name each PDF after its subfolder
-6. Save all PDFs into an output folder you choose
-
-### Example
-
-```
-Source Folder/
-├── Chapter 1/
-│   ├── page1.jpg
-│   ├── page2.jpg
-│   └── page10.jpg
-├── Chapter 2/
-│   ├── img_001.jpg
-│   └── img_002.png
-└── Bonus/
-    └── scan.jpeg
-```
-
-**Becomes:**
-
-```
-Output Folder/
-├── Chapter 1.pdf
-├── Chapter 2.pdf
-└── Bonus.pdf
-```
-
----
-
-## 🖥️ Requirements
-
-- Python **3.7+**
-- [Pillow](https://pypi.org/project/Pillow/)
-
----
-
-## ⚙️ Installation
-
-**1. Clone or download this repo**
-
-```bash
-git clone https://github.com/yourname/batch-folder-pdf.git
-cd batch-folder-pdf
-```
-
-**2. (Optional but recommended) Create a virtual environment**
-
-```bash
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# macOS / Linux
-source venv/bin/activate
-```
-
-**3. Install dependencies**
+## Install
 
 ```bash
 pip install Pillow
+
+# Optional: EPUB support
+pip install ebooklib
 ```
 
----
-
-## 🚀 Usage
+## Quick Start
 
 ```bash
+# GUI (default)
 python converter.py
+
+# CLI - auto scale to largest width
+python converter.py -s ./Manga -o ./Output -f pdf
+
+# CLI - fixed width
+python converter.py -s ./Manga -o ./Output -f epub --width 1200
 ```
 
-### Step-by-step
+## Width Options
 
-| Step | Action |
-|------|--------|
-| **1** | Click **Browse** next to *Source Folder* and select the parent folder containing your subfolders |
-| **2** | Click **Browse** next to *Output Folder* and select where you want the PDFs saved |
-| **3** | Click **🔍 Scan Subfolders** to detect all subfolders and preview what will be converted |
-| **4** | *(Optional)* Double-click any row in the list to preview the image order for that folder |
-| **5** | Click **🔄 Convert All to PDFs** to start the batch conversion |
+| Value | Name | Description |
+|-------|------|-------------|
+| `-2` | Auto (largest) | Scale ALL images to match the **widest** image |
+| `-1` | Original | No resizing |
+| `0` | Auto (smallest) | Scale ALL images to match the **narrowest** image |
+| `>0` | Fixed | Set exact width (e.g., `800`, `1200`) |
 
----
-
-## 🗂️ Supported Image Formats
-
-| Format | Extensions |
-|--------|------------|
-| JPEG | `.jpg` `.jpeg` |
-| PNG | `.png` |
-| Bitmap | `.bmp` |
-| TIFF | `.tiff` `.tif` |
-| WebP | `.webp` |
-
----
-
-## ✨ Features
-
-- **Recursive subfolder detection** — scans all nested subfolders
-- **Natural alphanumeric sorting** — `page2.jpg` sorts before `page10.jpg`
-- **Auto PDF naming** — PDF takes the name of its source subfolder
-- **Duplicate protection** — if `Chapter 1.pdf` already exists, saves as `Chapter 1 (1).pdf`
-- **Live preview** — double-click any row to see the exact image order before converting
-- **Progress bar** — real-time progress with per-folder status
-- **Non-blocking UI** — conversion runs in a background thread so the app stays responsive
-- **Multi-format support** — handles PNG, BMP, TIFF, WebP in addition to JPEG
-- **Root folder images** — images placed directly in the source folder are captured too
-
----
-
-## 📁 Project Structure
+### Example: Auto Largest
 
 ```
-batch-folder-pdf/
-│
-├── converter.py       # Main application
-├── requirements.txt   # Python dependencies
-└── README.md          # This file
+Folder contains:
+  page1.jpg  (800px wide)
+  page2.jpg  (1200px wide)  ← widest
+  page3.jpg  (1000px wide)
+
+With --width -2 (Auto largest):
+  page1.jpg → scaled UP to 1200px
+  page2.jpg → stays 1200px
+  page3.jpg → scaled UP to 1200px
+
+Result: All pages are 1200px wide
+```
+
+## CLI Options
+
+| Option | Short | Default | Description |
+|--------|-------|---------|-------------|
+| `--source` | `-s` | — | Source folder |
+| `--output` | `-o` | — | Output folder |
+| `--format` | `-f` | `pdf` | `pdf`, `epub`, `cbz` |
+| `--workers` | `-w` | 8 | Thread count |
+| `--width` | — | `-2` | See width options above |
+| `--gui` | — | — | Force GUI mode |
+
+## CLI Examples
+
+```bash
+# Auto scale to largest (default)
+python converter.py -s ./Comics -o ./PDFs -f pdf
+
+# Auto scale to smallest
+python converter.py -s ./Comics -o ./PDFs -f pdf --width 0
+
+# Fixed 1000px width
+python converter.py -s ./Comics -o ./PDFs -f cbz --width 1000
+
+# Original sizes (no resize)
+python converter.py -s ./Comics -o ./PDFs -f pdf --width -1
+
+# 12 workers for fast SSD
+python converter.py -s ./Comics -o ./PDFs -f pdf -w 12
+```
+
+## GUI Features
+
+- Scan shows **min-max width** for each folder
+- Dropdown presets: Auto Largest, Auto Smallest, fixed sizes
+- Custom width input
+- Progress per folder
+- `Ctrl+S` to start
+
+## Output
+
+```
+Source: /Manga/OnePiece/
+Output: /Downloads/
+
+Creates: /Downloads/OnePiece/
+├── Chapter 001.pdf
+├── Chapter 002.pdf
+└── Chapter 003.pdf
+```
+
+## Formats
+
+| Format | Best For |
+|--------|----------|
+| PDF | Universal |
+| CBZ | Comic readers |
+| EPUB | E-readers |
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| EPUB disabled | `pip install ebooklib` |
+| Out of memory | Reduce workers (`-w 2`) |
+| Empty documents | Check image files aren't corrupted |
+| Wrong order | Rename: `001.jpg`, `002.jpg`, etc. |
+| Linux no GUI | `sudo apt install python3-tk` |
+
+## License
+
+MIT
 ```
 
 ---
 
-## 📦 requirements.txt
+## Changes Made
 
-```
-Pillow>=10.0.0
-```
-
----
-
-## 🛠️ Troubleshooting
-
-**App won't open**
-- Make sure Python 3.7+ is installed: `python --version`
-- Make sure Pillow is installed: `pip install Pillow`
-- On Linux you may need tkinter: `sudo apt-get install python3-tk`
-
-**No subfolders found**
-- Make sure your source folder actually *contains subfolders* with images inside
-- Images must be directly inside the subfolders (not deeper nested levels skipped)
-- Check that your images have a supported extension (`.jpg`, `.jpeg`, `.png`, etc.)
-
-**PDF looks wrong / images out of order**
-- The app sorts by natural alphanumeric order
-- Rename your files with zero-padded numbers for guaranteed order:
-  `page001.jpg`, `page002.jpg`, ..., `page010.jpg`
-
-**Conversion failed for a folder**
-- The status column will show ❌ with an error snippet
-- Common causes: corrupted image file, insufficient disk space, permission error
-- Check the file manually and remove or replace it
-
-**Output PDF is too large**
-- The app saves at 100 DPI by default
-- For smaller files, pre-resize your images before converting
-
----
-
-## 📄 License
-
-MIT License — free to use, modify, and distribute.
-
----
-
-## 🙌 Contributing
-
-Pull requests welcome! Some ideas for improvements:
-
-- [ ] DPI setting slider in the UI
-- [ ] PDF compression options
-- [ ] Drag-and-drop folder support
-- [ ] Progress log export
-- [ ] Page size options (A4, Letter, etc.)
-- [ ] Option to flatten nested subfolders into one PDF
-
----
-
-*Built with Python + Tkinter + Pillow*
-```
+| Fix | Description |
+|-----|-------------|
+| **EPUB empty fix** | Added `img.load()` to force image loading, better error handling, file verification |
+| **Auto (largest)** | New option `-2` scales all images UP to widest one found |
+| **Better error messages** | Shows which images failed and why |
+| **Width analysis** | Scan shows min-max width range per folder |
+| **Cleanup on error** | Removes partial files if conversion fails |
+| **Image data validation** | Checks buffer isn't empty before writing |
+| **Default changed** | Now defaults to "Auto (largest)" which is more useful |
+| **Simpler GUI** | Cleaner colors, better fonts |
