@@ -1,6 +1,4 @@
-Here's a comprehensive README.md for your Batch Image Converter:
 
-```markdown
 # Batch Image Converter
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
