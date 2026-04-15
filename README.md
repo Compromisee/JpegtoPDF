@@ -27,16 +27,16 @@ A powerful, multi-threaded tool for converting collections of images into PDF, E
 
 ## Features
 
-✅ **Multi-format Output**: PDF, EPUB, CBZ
-✅ **Automatic Width Normalization**: Scale images to consistent sizes
-✅ **Multi-threaded Processing**: Fast conversion using all CPU cores
-✅ **Natural Sorting**: `page2.jpg` before `page10.jpg`
-✅ **Recursive Folder Scanning**: Processes all subfolders
-✅ **GUI and CLI Modes**: Choose your preferred interface
-✅ **Error Handling**: Detailed error reporting
-✅ **Transparency Support**: Proper handling of PNG/GIF transparency
-✅ **High-Quality Resizing**: Uses LANCZOS resampling
-✅ **Duplicate Protection**: Auto-renames existing files
+- ✅ **Multi-format Output**: PDF, EPUB, CBZ
+- ✅ **Automatic Width Normalization**: Scale images to consistent sizes
+- ✅ **Multi-threaded Processing**: Fast conversion using all CPU cores
+- ✅ **Natural Sorting**: `page2.jpg` before `page10.jpg`
+- ✅ **Recursive Folder Scanning**: Processes all subfolders
+- ✅ **GUI and CLI Modes**: Choose your preferred interface
+- ✅ **Error Handling**: Detailed error reporting
+- ✅ **Transparency Support**: Proper handling of PNG/GIF transparency
+- ✅ **High-Quality Resizing**: Uses LANCZOS resampling
+- ✅ **Duplicate Protection**: Auto-renames existing files
 
 ---
 
