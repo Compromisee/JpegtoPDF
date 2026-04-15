@@ -1,13 +1,11 @@
 # README.md
 
-```markdown
 # 📁 Batch Folder → PDF Converter
 
 A simple Python desktop app that converts folders of JPEG/image files into
 PDF documents — one PDF per subfolder, named after the subfolder, saved to
 an output folder of your choosing.
 
----
 
 ## 📸 What It Does
 
